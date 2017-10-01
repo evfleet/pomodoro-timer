@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import Icons from 'assets/icons';
 
-const Icon = ({ name }) => {
+const Icon = ({ name, size }) => {
   if (name) {
     return (
-      <img src={Icons[`${name.toLowerCase()}`]} />
+      <img width={size} height={size} src={Icons[`${name.toLowerCase()}`]} />
     );
   } else {
     return null;
@@ -14,6 +14,7 @@ const Icon = ({ name }) => {
 };
 
 Icon.propTypes = {
+  size: PropTypes.number.isRequired,
   name: (props, propName, componentName) => {
     const iconTypes = Object.keys(Icons);
 
@@ -26,6 +27,10 @@ Icon.propTypes = {
       throw new Error(`Invalid prop \`${propName}\` of value \`${props[propName].toLowerCase()}\` supplied to \`${componentName}\`, expected one of [${arrayString}]`);
     }
   }
+};
+
+Icon.defaultProps = {
+  size: 16
 };
 
 export default Icon;

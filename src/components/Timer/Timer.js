@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Icon from 'components/Icon';
+import formatTime from 'utils/formatTime';
 
 const initialState = {
   active: false,
@@ -8,19 +10,37 @@ const initialState = {
   currentTime: 0
 };
 
-export default class Timer extends Component {
+class Timer extends Component {
   state = initialState
+
+  componentWillMount() {
+    this.setState({
+      ...initialState,
+      currentTime: this.props.settings.pomodoroTime * 60
+    });
+  }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
   tick = () => {
-    this.setState(({ currentTime }) => ({ currentTime: currentTime + 1 }));
+    if (this.state.currentTime !== 0) {
+      this.setState(({ currentTime }) => ({ currentTime: currentTime - 1 }));
+    } else {
+      this.swapTimer();
+    }
+  }
+
+  swapTimer = () => {
+    console.log('yo');
   }
 
   stopTimer = () => {
-    this.setState(initialState, () => {
+    this.setState({
+      ...initialState,
+      currentTime: this.props.settings.pomodoroTime * 60
+    }, () => {
       clearInterval(this.interval);
     });
   }
@@ -44,30 +64,44 @@ export default class Timer extends Component {
     });
   }
 
+  renderTime(currentTime) {
+    const seconds = formatTime(currentTime % 60);
+    const minutes = formatTime(currentTime / 60);
+
+    return <p>{`${minutes}:${seconds}`}</p>;
+  }
+
   render() {
     const { active, paused, currentTime } = this.state;
 
     return (
       <div>
-        <button disabled={active} onClick={this.startTimer}>
-          <Icon name="play" />
-          Start
-        </button>
+        <div>
+          {this.renderTime(currentTime)}
+        </div>
 
-        <button onClick={this.stopTimer}>
-          Stop
-        </button>
+        <div>
+          <button disabled={active} onClick={this.startTimer}>
+            <Icon name="play" />
+          </button>
 
-        {paused === false ? (
-          <button disabled={!active} onClick={this.pauseTimer}>
-            Pause
+          <button disabled={!active} onClick={this.stopTimer}>
+            <Icon name="stop" />
           </button>
-        ) : (
-          <button onClick={this.startTimer}>
-            Resume
-          </button>
-        )}
+
+          {paused === false ? (
+            <button disabled={!active} onClick={this.pauseTimer}>
+              <Icon name="pause" />
+            </button>
+          ) : (
+            <button onClick={this.startTimer}>
+              <Icon name="resume" />
+            </button>
+          )}
+        </div>
       </div>
     );
   }
 }
+
+export default Timer;
