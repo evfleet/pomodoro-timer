@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-import Icon from 'components/Icon';
-import formatTime from 'utils/formatTime';
+import Controls from 'components/Controls';
+import Countdown from 'components/Countdown';
 
 const initialState = {
   active: false,
@@ -20,20 +19,12 @@ class Timer extends Component {
     });
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
   tick = () => {
     if (this.state.currentTime !== 0) {
       this.setState(({ currentTime }) => ({ currentTime: currentTime - 1 }));
     } else {
-      this.swapTimer();
+      // this.swapTimer();
     }
-  }
-
-  swapTimer = () => {
-    console.log('yo');
   }
 
   stopTimer = () => {
@@ -64,40 +55,25 @@ class Timer extends Component {
     });
   }
 
-  renderTime(currentTime) {
-    const seconds = formatTime(currentTime % 60);
-    const minutes = formatTime(currentTime / 60);
-
-    return <p>{`${minutes}:${seconds}`}</p>;
-  }
-
   render() {
     const { active, paused, currentTime } = this.state;
 
     return (
       <div>
         <div>
-          {this.renderTime(currentTime)}
+          <Countdown
+            currentTime={currentTime}
+          />
         </div>
 
         <div>
-          <button disabled={active} onClick={this.startTimer}>
-            <Icon name="play" />
-          </button>
-
-          <button disabled={!active} onClick={this.stopTimer}>
-            <Icon name="stop" />
-          </button>
-
-          {paused === false ? (
-            <button disabled={!active} onClick={this.pauseTimer}>
-              <Icon name="pause" />
-            </button>
-          ) : (
-            <button onClick={this.startTimer}>
-              <Icon name="resume" />
-            </button>
-          )}
+          <Controls
+            active={active}
+            paused={paused}
+            stopTimer={this.stopTimer}
+            startTimer={this.startTimer}
+            pauseTimer={this.pauseTimer}
+          />
         </div>
       </div>
     );

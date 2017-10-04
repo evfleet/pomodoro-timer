@@ -3,7 +3,11 @@ import * as actionTypes from 'actions/types';
 
 const initialState = {
   loading: true,
+  break: false,
   count: 0,
+  tasks: [
+
+  ],
   settings: {
     pomodoroTime: 25,
     breakTime: 5,
@@ -19,6 +23,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        count: 0
+      };
+
+    case actionTypes.SWAP_TIMER:
+      return {
+        ...state,
+        break: !state.break,
+        count: state.count + 1
+      };
+
+    case actionTypes.RESET_TIMER:
+      return {
+        ...state,
+        break: false,
         count: 0
       };
 

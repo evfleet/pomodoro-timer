@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Timer from 'components/Timer';
+import Timer from 'containers/Timer';
 
 @connect((state) => state)
 
